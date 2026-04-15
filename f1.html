@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ResumeAI Platform</title>
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #06B6D4;
+            --bg: #0f172a;
+            --text: white;
+            --card: rgba(255, 255, 255, 0.08);
+        }
+
+        .light {
+            --bg: #f9fafb;
+            --text: #111;
+            --card: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: 0.3s;
+        }
+
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 40px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        nav a {
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        /* BUTTON */
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 10px 18px;
+            border-radius: 6px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* SECTIONS */
+        section {
+            display: none;
+            padding: 60px 10%;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        /* CARD */
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* FLEX */
+        .flex {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* FORM */
+        .form-box {
+            max-width: 350px;
+            margin: auto;
+        }
+
+        input {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        /* DRAG DROP */
+        .drop-zone {
+            border: 2px dashed var(--secondary);
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* CHART */
+        .chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#22C55E 0% 70%, #444 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart span {
+            font-size: 24px;
+        }
+
+        /* ALIGNMENT FIX */
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <h2>ResumeAI</h2>
+        <div>
+            <a onclick="showPage('home')">Home</a>
+            <a onclick="showPage('login')">Login</a>
+            <a onclick="showPage('signup')">Signup</a>
+            <a onclick="showPage('upload')">Upload</a>
+            <a onclick="showPage('dashboard')">Dashboard</a>
+            <a onclick="toggleTheme()">🌙</a>
+        </div>
+    </nav>
+
+    <!-- HOME -->
+    <section id="home" class="active">
+        <div class="hero">
+            <h1>Smart Resume Screening</h1>
+            <p>AI-powered hiring made simple</p>
+            <button class="btn" onclick="showPage('signup')">Get Started</button>
+        </div>
+
+        <div class="flex center">
+            <div class="card">📤 Upload Resume</div>
+            <div class="card">🔍 Smart Filtering</div>
+            <div class="card">⚡ Fast Hiring</div>
+        </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login">
+        <div class="form-box card">
+            <h2>Login</h2>
+            <input id="loginEmail" placeholder="Email">
+            <input id="loginPassword" type="password" placeholder="Password">
+            <button class="btn">Login</button>
+        </div>
+    </section>
+
+    <!-- SIGNUP -->
+    <section id="signup">
+        <div class="form-box card">
+            <h2>Sign Up</h2>
+            <input id="name" placeholder="Name">
+            <input id="email" placeholder="Email">
+            <input id="password" type="password" placeholder="Password">
+            <button class="btn">Create Account</button>
+        </div>
+    </section>
+
+    <!-- UPLOAD -->
+    <section id="upload">
+        <div class="form-box card">
+            <h2>Drag & Drop Resume</h2>
+            <div class="drop-zone" id="dropZone">
+                Drop file here or click
+                <input type="file" id="resumeFile" hidden>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard">
+        <div class="dashboard">
+
+            <h2>Recruiter Dashboard</h2>
+
+            <!-- FILTER -->
+            <input id="filterInput" placeholder="Enter skill (Python, Java...)">
+            <button class="btn" onclick="filterCandidates()">Filter</button>
+
+            <!-- CANDIDATES -->
+            <div id="candidateList" class="flex">
+                <div class="card" data-skill="python">👤 John - Python</div>
+                <div class="card" data-skill="java">👤 Sara - Java</div>
+                <div class="card" data-skill="data">👤 Alex - Data Analyst</div>
+            </div>
+
+            <!-- CHART -->
+            <div class="center">
+                <div class="chart"><span id="percent">70%</span></div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // PAGE NAVIGATION
+        function showPage(id) {
+            document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+        }
+
+        // THEME TOGGLE
+        function toggleTheme() {
+            document.body.classList.toggle("light");
+        }
+
+        // DRAG DROP
+        let drop = document.getElementById("dropZone");
+        let fileInput = document.getElementById("resumeFile");
+
+        drop.onclick = () => fileInput.click();
+
+        drop.addEventListener("dragover", e => {
+            e.preventDefault();
+            drop.style.borderColor = "green";
+        });
+
+        drop.addEventListener("dragleave", () => {
+            drop.style.borderColor = "#06B6D4";
+        });
+
+        drop.addEventListener("drop", e => {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+            drop.innerHTML = "File Uploaded ✅";
+        });
+
+        // FILTER LOGIC
+        function filterCandidates() {
+            let input = document.getElementById("filterInput").value.toLowerCase();
+            let cards = document.querySelectorAll("#candidateList .card");
+
+            let count = 0;
+
+            cards.forEach(card => {
+                let skill = card.getAttribute("data-skill");
+                if (skill.includes(input)) {
+                    card.style.display = "block";
+                    count++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            let percent = (count / cards.length) * 100;
+            document.getElementById("percent").innerText = percent + "%";
+        }
+    </script>
+
+</body>
+
+</html>

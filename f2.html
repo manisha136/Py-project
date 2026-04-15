@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>InstaScreen</title>
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #06B6D4;
+            --bg: #0f172a;
+            --text: white;
+            --card: rgba(255, 255, 255, 0.08);
+        }
+
+        .light {
+            --bg: #f9fafb;
+            --text: #111;
+            --card: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* NAV */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 60px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        nav a {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 120px 20px;
+            background: linear-gradient(135deg, #4F46E5, #06B6D4);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: white;
+            color: black;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* SECTIONS */
+        section {
+            display: none;
+            padding: 60px 10%;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 10px;
+        }
+
+        .flex {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* FORM */
+        .form-box {
+            max-width: 350px;
+            margin: auto;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* DRAG DROP */
+        .drop-zone {
+            border: 2px dashed var(--secondary);
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        /* CHART */
+        .chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(#22C55E 0% 60%, #444 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .chart span {
+            font-size: 22px;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <h2>InstaScreen</h2>
+        <div>
+            <a onclick="showPage('home')">Home</a>
+            <a onclick="showPage('login')">Login</a>
+            <a onclick="showPage('signup')">Signup</a>
+            <a onclick="toggleTheme()">🌙</a>
+        </div>
+    </nav>
+
+    <!-- HOME / WELCOME -->
+    <section id="home" class="active">
+
+        <div class="hero">
+            <h1>Smart Resume Screening</h1>
+            <p>Automate hiring with intelligent filtering and ranking</p>
+            <button class="btn" onclick="showPage('signup')">Get Started</button>
+        </div>
+
+        <div class="flex center">
+            <div class="card">📤 Upload Resume</div>
+            <div class="card">🔍 Smart Matching</div>
+            <div class="card">📊 Ranking & Analytics</div>
+        </div>
+
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login">
+        <div class="form-box card">
+            <h2>Login</h2>
+
+            <select id="loginRole">
+                <option>Job Seeker</option>
+                <option>Recruiter</option>
+            </select>
+
+            <input id="loginEmail" placeholder="Email">
+            <input id="loginPassword" type="password" placeholder="Password">
+
+            <button class="btn" onclick="login()">Login</button>
+        </div>
+    </section>
+
+    <!-- SIGNUP -->
+    <section id="signup">
+        <div class="form-box card">
+            <h2>Sign Up</h2>
+
+            <select id="signupRole">
+                <option>Job Seeker</option>
+                <option>Recruiter</option>
+            </select>
+
+            <input id="name" placeholder="Name">
+            <input id="email" placeholder="Email">
+            <input id="password" type="password" placeholder="Password">
+
+            <button class="btn">Create Account</button>
+        </div>
+    </section>
+
+    <!-- JOB SEEKER DASHBOARD -->
+    <section id="jobseeker">
+        <h2>Job Seeker Dashboard</h2>
+
+        <div class="card">
+            <h3>Upload Resume</h3>
+            <div class="drop-zone" id="dropZone">
+                Drop Resume or Click
+                <input type="file" id="resumeFile" hidden>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Your Match Score</h3>
+            <div class="chart"><span id="score">60%</span></div>
+        </div>
+    </section>
+
+    <!-- RECRUITER DASHBOARD -->
+    <section id="recruiter">
+        <h2>Recruiter Dashboard</h2>
+
+        <div class="dashboard">
+
+            <input id="filterInput" placeholder="Enter skill (Python, Java...)">
+            <button class="btn" onclick="filterCandidates()">Filter</button>
+
+            <div id="candidateList" class="flex">
+                <div class="card" data-skill="python">John - Python</div>
+                <div class="card" data-skill="java">Sara - Java</div>
+                <div class="card" data-skill="data">Alex - Data</div>
+            </div>
+
+            <div class="center">
+                <div class="chart"><span id="percent">0%</span></div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // NAVIGATION
+        function showPage(id) {
+            document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+        }
+
+        // THEME
+        function toggleTheme() {
+            document.body.classList.toggle("light");
+        }
+
+        // LOGIN ROLE SWITCH
+        function login() {
+            let role = document.getElementById("loginRole").value;
+
+            if (role === "Job Seeker") {
+                showPage("jobseeker");
+            } else {
+                showPage("recruiter");
+            }
+        }
+
+        // DRAG DROP
+        let drop = document.getElementById("dropZone");
+        let fileInput = document.getElementById("resumeFile");
+
+        drop.onclick = () => fileInput.click();
+
+        drop.addEventListener("drop", e => {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+            document.getElementById("score").innerText = "75%";
+        });
+
+        // FILTER
+        function filterCandidates() {
+            let input = document.getElementById("filterInput").value.toLowerCase();
+            let cards = document.querySelectorAll("#candidateList .card");
+
+            let count = 0;
+
+            cards.forEach(card => {
+                let skill = card.getAttribute("data-skill");
+
+                if (skill.includes(input)) {
+                    card.style.display = "block";
+                    count++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            let percent = (count / cards.length) * 100;
+            document.getElementById("percent").innerText = percent + "%";
+        }
+    </script>
+
+</body>
+
+</html>

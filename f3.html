@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>InstaScreen</title>
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #06B6D4;
+            --bg: #0f172a;
+            --text: white;
+            --card: rgba(255, 255, 255, 0.08);
+        }
+
+        .light {
+            --bg: #f9fafb;
+            --text: #111;
+            --card: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        nav a {
+            margin-left: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #06B6D4;
+        }
+
+        /* LOGO */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 120px 20px;
+            background: linear-gradient(135deg, #4F46E5, #06B6D4);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+        }
+
+        .hero p {
+            opacity: 0.9;
+        }
+
+        /* BUTTON */
+        .btn {
+            padding: 12px 22px;
+            background: white;
+            color: black;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* SECTIONS + ANIMATION */
+        section {
+            display: none;
+            padding: 60px 10%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        /* FLEX */
+        .flex {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* FORM */
+        .form-box {
+            max-width: 350px;
+            margin: auto;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        /* DRAG DROP */
+        .drop-zone {
+            border: 2px dashed var(--secondary);
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* CHART */
+        .chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(#22C55E 0% 60%, #444 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart span {
+            font-size: 22px;
+        }
+
+        /* CENTER */
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">
+            <img src="logo.png" height="40">
+            <h2>InstaScreen</h2>
+        </div>
+
+        <div>
+            <a onclick="showPage('home')">Home</a>
+            <a onclick="showPage('login')">Login</a>
+            <a onclick="showPage('signup')">Signup</a>
+            <a onclick="toggleTheme()">🌙</a>
+        </div>
+    </nav>
+
+    <!-- HOME -->
+    <section id="home" class="active">
+        <div class="hero">
+            <img src="logo.png" height="80">
+            <h1>Smart Resume Screening</h1>
+            <p>Automate hiring with intelligent filtering & ranking</p>
+            <button class="btn" onclick="showPage('signup')">Get Started</button>
+        </div>
+
+        <div class="flex">
+            <div class="card">📤 Upload Resume</div>
+            <div class="card">🔍 Smart Matching</div>
+            <div class="card">📊 Ranking</div>
+        </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login">
+        <div class="form-box card">
+            <h2>Login</h2>
+
+            <select id="loginRole">
+                <option>Job Seeker</option>
+                <option>Recruiter</option>
+            </select>
+
+            <input id="loginEmail" placeholder="Email">
+            <input id="loginPassword" type="password" placeholder="Password">
+
+            <button class="btn" onclick="login()">Login</button>
+        </div>
+    </section>
+
+    <!-- SIGNUP -->
+    <section id="signup">
+        <div class="form-box card">
+            <h2>Sign Up</h2>
+
+            <select id="signupRole">
+                <option>Job Seeker</option>
+                <option>Recruiter</option>
+            </select>
+
+            <input id="name" placeholder="Name">
+            <input id="email" placeholder="Email">
+            <input id="password" type="password" placeholder="Password">
+
+            <button class="btn">Create Account</button>
+        </div>
+    </section>
+
+    <!-- JOB SEEKER -->
+    <section id="jobseeker">
+        <h2>Job Seeker Dashboard</h2>
+
+        <div class="card">
+            <h3>Upload Resume</h3>
+            <div class="drop-zone" id="dropZone">
+                Drop Resume or Click
+                <input type="file" id="resumeFile" hidden>
+            </div>
+        </div>
+
+        <div class="card center">
+            <div class="chart"><span id="score">0%</span></div>
+        </div>
+    </section>
+
+    <!-- RECRUITER -->
+    <section id="recruiter">
+        <h2>Recruiter Dashboard</h2>
+
+        <input id="filterInput" placeholder="Enter skill (Python, Java...)">
+        <button class="btn" onclick="filterCandidates()">Filter</button>
+
+        <div id="candidateList" class="flex">
+            <div class="card" data-skill="python">John - Python</div>
+            <div class="card" data-skill="java">Sara - Java</div>
+            <div class="card" data-skill="data">Alex - Data</div>
+        </div>
+
+        <div class="center">
+            <div class="chart"><span id="percent">0%</span></div>
+        </div>
+    </section>
+
+    <script>
+        // PAGE SWITCH WITH ANIMATION
+        function showPage(id) {
+            let current = document.querySelector(".active");
+
+            if (current) {
+                current.style.opacity = 0;
+                current.style.transform = "translateY(20px)";
+
+                setTimeout(() => {
+                    current.classList.remove("active");
+                    document.getElementById(id).classList.add("active");
+                }, 200);
+            } else {
+                document.getElementById(id).classList.add("active");
+            }
+        }
+
+        // THEME TOGGLE
+        function toggleTheme() {
+            document.body.classList.toggle("light");
+        }
+
+        // LOGIN ROLE SWITCH
+        function login() {
+            let role = document.getElementById("loginRole").value;
+
+            if (role === "Job Seeker") {
+                showPage("jobseeker");
+            } else {
+                showPage("recruiter");
+            }
+        }
+
+        // DRAG DROP
+        let drop = document.getElementById("dropZone");
+        let fileInput = document.getElementById("resumeFile");
+
+        drop.onclick = () => fileInput.click();
+
+        drop.addEventListener("drop", e => {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+
+            // Simulated score
+            document.getElementById("score").innerText = "75%";
+            drop.innerHTML = "Resume Uploaded ✅";
+        });
+
+        // FILTER
+        function filterCandidates() {
+            let input = document.getElementById("filterInput").value.toLowerCase();
+            let cards = document.querySelectorAll("#candidateList .card");
+
+            let count = 0;
+
+            cards.forEach(card => {
+                let skill = card.getAttribute("data-skill");
+
+                if (skill.includes(input)) {
+                    card.style.display = "block";
+                    count++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            let percent = (count / cards.length) * 100;
+            document.getElementById("percent").innerText = percent + "%";
+        }
+    </script>
+
+</body>
+
+</html>
